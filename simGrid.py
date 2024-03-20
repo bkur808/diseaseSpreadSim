@@ -44,5 +44,6 @@ class Grid:
         for i in range(num):
             if (i < len(self.people)):
              self.people[i].infect()
+             self.people[i].sickcounter = 10
           
     
