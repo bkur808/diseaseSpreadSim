@@ -23,10 +23,8 @@ class Grid:
             self.people.append(individual)
             self.grid[x][y] = individual
 
-
     def is_position_occupied(self, position):
         return position in self.occupied_positions
-    
      
     def printGrid(self):
         for row in self.grid:
