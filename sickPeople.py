@@ -1,4 +1,4 @@
-class People:
+class Individual:
     def __init__(self, position):
         self.position = position
         self.state = 'Not Sick (Yet)'
