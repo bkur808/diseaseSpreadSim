@@ -1,5 +1,4 @@
 import random
-import simGrid
 
 INFECTIOUS_PERIOD = 100000
 
