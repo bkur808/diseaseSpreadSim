@@ -63,6 +63,12 @@ class Grid:
             if (i < len(self.people)):
              self.people[i].infect()
 
+    def all_sick(self):
+        for individual in self.people:
+            if individual.state != 'Sick':
+                return False
+        return True
+
     def advanceTime(self):
         for i in range(len(self.people)):
             self.people[i].move(self)
