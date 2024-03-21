@@ -1,6 +1,6 @@
 Disease Spread Simulator
 
-SAMPLE TEST CODE TO TRY OUT PROJECT:
+SAMPLE TEST CODE TO TRY OUT PROJECT - GUI NOT CURRENTLY SETUP IN simVis.py
 import simGrid
 myTest = simGrid.Grid(20,20,50) ; myTest.infectLot(1) ; myTest.printGrid()
 
