@@ -2,10 +2,8 @@ Disease Spread Simulator
 
 SAMPLE TEST CODE TO TRY OUT PROJECT:
 import simGrid
-import sickPeople
-myTest = simGrid.Grid(20,20,50)
-myTest.infectLot(1)
-myTest.printGrid()
+myTest = simGrid.Grid(20,20,50) ; myTest.infectLot(1) ; myTest.printGrid()
+
 myTest.advanceTime() ; myTest.printGrid()
 myTest.advanceTime() ; myTest.printGrid()
 ........can repeat as many times as wanted to test
