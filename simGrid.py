@@ -25,6 +25,25 @@ class Grid:
 
     def is_position_occupied(self, position):
         return position in self.occupied_positions
+    
+
+    def get_neighbors(self, position):
+        x, y = position
+        neighbors = []
+        for i in range(max(0, x - 1), min(self.rows, x + 2)):
+            for j in range(max(0, y - 1), min(self.columns, y + 2)):
+                if (i, j) != position:
+                    neighbors.append((i, j))
+        return neighbors
+
+    def check_neighbors_sick(self, position):
+        x, y = position
+        neighbors = self.get_neighbors(position)
+        for neighbor in neighbors:
+            nx, ny = neighbor
+            if self.grid[nx][ny] is not None and self.grid[nx][ny].state == 'Sick':
+                return True
+        return False
      
     def printGrid(self):
         for row in self.grid:
@@ -34,9 +53,9 @@ class Grid:
                 elif isinstance(cell, sickPeople.Individual):
                     if cell.state == 'Not Sick (Yet)':
                         print("$", end=" ")  # Print $ for individual
-                    elif cell.state == 'Sicko Mode':
-                        print("!", end=" ")
-                    elif cell.state == 'Over it and Immune':
+                    elif cell.state == 'Sick':
+                        print("@", end=" ")
+                    elif cell.state == 'Over it - Immune':
                         print(":)", end=" ")        
             print()  # Move to next line at end of each row
 
@@ -44,6 +63,16 @@ class Grid:
         for i in range(num):
             if (i < len(self.people)):
              self.people[i].infect()
-             self.people[i].sickcounter = 10
-          
-    
+
+    def advanceTime(self):
+        for i in range(len(self.people)):
+            self.people[i].move(self) 
+            if(self.people[i].state == 'Sick'):
+                self.people[i].reduceSickCount()
+            elif(self.people[i].state == 'Not Sick (Yet)'):
+                if(self.check_neighbors_sick(self.people[i].position)):
+                    self.people[i].infect()
+            elif(self.people[i].state == 'Over it - Immune'):
+                #TODO ?
+                pass
+            pass
