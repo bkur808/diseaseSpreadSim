@@ -26,7 +26,6 @@ class Grid:
     def is_position_occupied(self, position):
         return position in self.occupied_positions
     
-
     def get_neighbors(self, position):
         x, y = position
         neighbors = []
@@ -65,14 +64,16 @@ class Grid:
              self.people[i].infect()
 
     def advanceTime(self):
-        for i in range(len(self.people)):
-            self.people[i].move(self) 
-            if(self.people[i].state == 'Sick'):
-                self.people[i].reduceSickCount()
-            elif(self.people[i].state == 'Not Sick (Yet)'):
-                if(self.check_neighbors_sick(self.people[i].position)):
-                    self.people[i].infect()
-            elif(self.people[i].state == 'Over it - Immune'):
+        for person in self.people:
+            self.people[person].move(self)
+             
+        for person in self.people:
+            if(self.people[person].state == 'Sick'):
+                self.people[person].reduceSickCount()
+            elif(self.people[person].state == 'Not Sick (Yet)'):
+                if(self.check_neighbors_sick(self.people[person].position)):
+                    self.people[person].infect()
+            elif(self.people[person].state == 'Over it - Immune'):
                 #TODO ?
                 pass
             pass

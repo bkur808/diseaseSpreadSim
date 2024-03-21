@@ -1,16 +1,20 @@
 Disease Spread Simulator
 
+SAMPLE TEST CODE TO TRY OUT PROJECT:
+myTest = simGrid.Grid(20,20,50)
+myTest.infectLot(1)
+myTest.printGrid()
+myTest.advanceTime() ; myTest.printGrid()
+myTest.advanceTime() ; myTest.printGrid()
+........can repeat as many times as wanted to test
+
 Current class structures:
 
-People - Position and Disease Status
-     - Need to add a counter for sickness which activates on infection (recover after 10 ticks?)
-     - also add death status/removal from sim.
+Grid structure can be initialized with any # or rows, columns, and residents.
+ -there are methods for infecting lot (# of initial infections)
+ -getting neighbors
+ -advancing time forward one step (all people move and can be infected)
+ -infections occur after all individuals have moved in advanceTime
 
-Grid - Can be initialized with any number of rows/colums/people-count
-     - Initialize a simulation with 'object name here' = simGrid.Grid(# rows, # columns, # people in sim)
-     - Begins with a random configuration of people
-     - As of now, can infect a group of people at beginning with .infectLot(n) 
-     - Can output current grid configuration to screen with .printGrid()
-
-From here we can add a class to keep track of statistics.
-We can implement different logic for the movements of the People turn by turn as well.
+ People structure are initialized with position and sickness state. There is a global infectious-period constant variable for sickness length. 
+ They have a move method, which as of now works by choosing a random empty neighbor position to move into. Can be changed by situation.
