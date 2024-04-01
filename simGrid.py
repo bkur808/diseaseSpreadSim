@@ -129,7 +129,7 @@ class Grid:
        for i in range(n): 
             self.test1()
             while not self.allSick():
-                self.printStats()
+                #self.printStats()
                 self.advanceTime()
             print('Final Stats: ')
             self.printStats()

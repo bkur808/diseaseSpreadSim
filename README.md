@@ -1,5 +1,17 @@
 Disease Spread Simulator
 
+3/31
+
+I have updated stuff so that the first simulation can be run non-stop - just have to add stuff 
+for averaging statistics and then the graphing portion. 
+
+Simulation can be run by the following code:
+import simGrid ; test = simGrid.Grid() ; test.runSim1(1000)
+
+As it stands I am just printing the final stats print-out (on turn when all people infected).
+
+3/21
+
 SAMPLE TEST CODE TO TRY OUT PROJECT - GUI NOT CURRENTLY SETUP IN simVis.py FILE (TODO)
 
 import simGrid ; 
