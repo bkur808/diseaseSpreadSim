@@ -8,7 +8,7 @@ class Grid:
         self.size = rows * columns
         self.grid = [[None for _ in range(columns)] for _ in range(rows)]
         self.occupied_positions = set()
-        self.turn = 0
+        self.turn = 1
         self.population = 0
         self.healthyPopulation = 0
         self.sickPopulation = 0
@@ -23,7 +23,11 @@ class Grid:
     
 
     def printStats(self):
-        print(self.stats) 
+        print('Turn: ',self.stats[0])
+        print('Population: ', self.stats[1])
+        print('Healthy Count: ', self.stats[2])
+        print('Sick Count: ', self.stats[3])
+        print('Recovered Count: ', self.stats[4]) 
     
     def printStatLog(self): #FIX THIS LATER
         for i in range(len(self.statLog)):
@@ -89,13 +93,14 @@ class Grid:
              self.people[i].infect()
 
     def all_sick(self):
-        for individual in self.people:
-            if individual.state != 'Sick':
-                return False
-        return True
+        if self.sickPopulation + self.recoveredPopulation >= self.population:
+            return True
+        else:
+            return False
 
     def advanceTime(self):
         self.turn += 1
+        self.updateStats()
         for i in range(len(self.people)):
             self.people[i].move(self)
              
