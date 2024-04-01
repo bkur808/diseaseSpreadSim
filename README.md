@@ -1,5 +1,16 @@
 Disease Spread Simulator
 
+4/1 SIM 1 is somewhat complete w/o visualizations. 
+    SIM 2 is done other than stat tracking - needs logic to be fixed for recovering/dying
+    SIM 3 is yet to be started
+
+    Can test scenarios with the following prompts:
+    import simGrid
+    test1 = simGrid.Grid() ; test2 = simGrid.Grid()
+    test1.runSim1(10)
+    test2.runSim2(10)
+
+
 3/31
 
 I have updated stuff so that the first simulation can be run non-stop - just have to add stuff 
