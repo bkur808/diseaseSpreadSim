@@ -13,14 +13,14 @@ class Grid:
         self.healthyPopulation = 0
         self.sickPopulation = 0
         self.recoveredPopulation = 0
+        self.deadPopulation = 0
         self.statLog = []
         self.create_population(person_count)
         self.updateStats()
 
     def updateStats(self):
-        self.stats = (self.turn, self.population, self.healthyPopulation, self.sickPopulation, self.recoveredPopulation)
+        self.stats = (self.turn, self.population, self.healthyPopulation, self.sickPopulation, self.recoveredPopulation, self.deadPopulation)
         self.statLog.append(self.stats)
-    
 
     def printStats(self):
         print('Turn: ',self.stats[0])
@@ -28,10 +28,7 @@ class Grid:
         print('Healthy Count: ', self.stats[2])
         print('Sick Count: ', self.stats[3])
         print('Recovered Count: ', self.stats[4]) 
-    
-    def printStatLog(self): #FIX THIS LATER
-        for i in range(len(self.statLog)):
-            print(self.statLog[i])
+        print('Death Count: ', self.stats[5])
         
     def create_population(self, person_count):
         self.population = person_count
@@ -92,7 +89,7 @@ class Grid:
             if (i < len(self.people)):
              self.people[i].infect()
 
-    def all_sick(self):
+    def allSick(self):
         if self.sickPopulation + self.recoveredPopulation >= self.population:
             return True
         else:
@@ -122,3 +119,11 @@ class Grid:
                 #TODO ?
                 pass
             pass
+
+    def runSim1(self):
+        while not self.allSick():
+            self.printStats()
+            self.advanceTime()
+        print('Final Stats: ')
+        self.printStats()
+            
