@@ -34,6 +34,15 @@ class Grid:
         print('Sick Count: ', self.stats[3])
         print('Recovered Count: ', self.stats[4]) 
         print('Death Count: ', self.stats[5])
+
+    def sim1Print(self):
+        print('Turn: ',self.stats[0])
+        print('Population: ', self.stats[1])
+        #print('Healthy Count: ', self.stats[2])
+        print('Sick Count: ', self.stats[3])
+        #print('Recovered Count: ', self.stats[4]) 
+        #print('Death Count: ', self.stats[5])
+        
         
     def create_population(self, person_count):
         self.population = person_count
@@ -131,6 +140,6 @@ class Grid:
             while not self.allSick():
                 #self.printStats()
                 self.advanceTime()
-            print('Final Stats: ')
-            self.printStats()
+            print('Simulation ',(i+1),' Final Stats: ')
+            self.sim1Print()
             
