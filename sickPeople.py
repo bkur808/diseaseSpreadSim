@@ -1,7 +1,5 @@
 import random
 
-INFECTIOUS_PERIOD = 1000
-
 class Individual:
     def __init__(self, position):
         self.position = position
@@ -9,9 +7,9 @@ class Individual:
         self.sickCounter = None
         self.lifestatus = 'Living'
 
-    def infect(self):
+    def infect(self, num):
         self.state = 'Sick'
-        self.sickCounter = INFECTIOUS_PERIOD
+        self.sickCounter = num
 
     def recover(self):
         self.state = 'Over it - Immune'

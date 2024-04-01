@@ -2,13 +2,14 @@ import random
 import sickPeople
 
 class Grid:
+
     def __init__(self, rows = 0, columns = 0, person_count = 0):
         self.rows = rows
         self.columns = columns
         self.size = rows * columns
         self.grid = [[None for _ in range(columns)] for _ in range(rows)]
         self.occupied_positions = set()
-        self.turn = 1
+        self.turn = 0
         self.population = 0
         self.healthyPopulation = 0
         self.sickPopulation = 0
@@ -42,7 +43,7 @@ class Grid:
         print('Sick Count: ', self.stats[3])
         #print('Recovered Count: ', self.stats[4]) 
         #print('Death Count: ', self.stats[5])
-        
+        print()        
         
     def create_population(self, person_count):
         self.population = person_count
@@ -95,13 +96,13 @@ class Grid:
                         print(":)", end=" ")        
             print()  # Move to next line at end of each row
 
-    def infectLot(self, num):
+    def infectLot(self, num, infectiousPeriod = 1000):
         self.sickPopulation = num
         self.healthyPopulation -= num
         self.updateStats()
         for i in range(num):
             if (i < len(self.people)):
-             self.people[i].infect()
+             self.people[i].infect(infectiousPeriod)
 
     def allSick(self):
         if self.sickPopulation + self.recoveredPopulation >= self.population:
@@ -109,7 +110,7 @@ class Grid:
         else:
             return False
 
-    def advanceTime(self):
+    def advanceTime(self, infectiousPeriod = 1000):
         self.turn += 1
         self.updateStats()
         for i in range(len(self.people)):
@@ -125,7 +126,7 @@ class Grid:
                  self.updateStats()
             elif(self.people[i].state == 'Not Sick (Yet)'):
                 if(self.check_neighbors_sick(self.people[i].position)):
-                    self.people[i].infect()
+                    self.people[i].infect(infectiousPeriod)
                     self.healthyPopulation -= 1
                     self.sickPopulation += 1
                     self.updateStats()
@@ -135,11 +136,52 @@ class Grid:
             pass
 
     def runSim1(self, n):
-       for i in range(n): 
+        infectiousPeriod = 1000
+        infected_counts = []  # List to store infected counts at each step
+        max_steps = 0  # Initialize max_steps to 0
+
+        for i in range(n): 
             self.test1()
+            infected_count_step = [(self.turn, 1, self.sickPopulation)]  # Store initial infected count
+            prev_sick_population = self.sickPopulation  # Store previous sick population
             while not self.allSick():
-                #self.printStats()
-                self.advanceTime()
-            print('Simulation ',(i+1),' Final Stats: ')
+                self.advanceTime(infectiousPeriod)
+                new_sick_population = self.sickPopulation - prev_sick_population  # Calculate newly infected count
+                total_sick_population = self.sickPopulation  # Calculate total sick population
+                infected_count_step.append((self.turn, new_sick_population, total_sick_population))  # Append tuple
+                prev_sick_population = total_sick_population  # Update previous sick population
+            infected_counts.append(infected_count_step)  # Append infected count at each step for this run
+            print('Simulation ', i + 1, ' Final Stats: ')
             self.sim1Print()
+            max_steps = max(max_steps, len(infected_count_step))  # Update max_steps
+
+        #return infected_counts
+        # Calculate averages up to the length of the longest simulation run
+        avg_new_infected = [1] * max_steps  # Initialize list to store average new infected counts
+        avg_total_infected = [1] * max_steps  # Initialize list to store average total infected counts
+        num_simulations = len(infected_counts)
+    
+        # Calculate average new infected and average total infected at each step
+        for step in range(1, max_steps):  # Skip initial step
+            total_new_infected = 0
+            total_total_infected = 0
+            for infected_count_step in infected_counts:
+                if step < len(infected_count_step):
+                    total_new_infected += infected_count_step[step][1]
+                    total_total_infected += infected_count_step[step][2]
+                else:
+                    # Assuming sickPopulation remains constant once it reaches the maximum
+                    total_total_infected += infected_count_step[-1][2]
+            avg_new_infected[step] = total_new_infected / num_simulations
+            avg_total_infected[step] = total_total_infected / num_simulations
+
+        # Print averages
+        print("Average number of new people infected at each step:")
+        for step, count in enumerate(avg_new_infected, start=1):
+            print(f"Step {step}: {count:.2f}")
+
+        print("\nAverage number of people who are infected at each step:")
+        for step, count in enumerate(avg_total_infected, start=1):
+            print(f"Step {step}: {count:.2f}")
+
             
