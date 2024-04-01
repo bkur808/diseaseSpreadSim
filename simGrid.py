@@ -8,9 +8,31 @@ class Grid:
         self.size = rows * columns
         self.grid = [[None for _ in range(columns)] for _ in range(rows)]
         self.occupied_positions = set()
+        self.turn = 0
+        self.population = 0
+        self.healthyPopulation = 0
+        self.sickPopulation = 0
+        self.recoveredPopulation = 0
+        self.statLog = []
         self.create_population(person_count)
+        self.updateStats()
+
+    def updateStats(self):
+        self.stats = (self.turn, self.population, self.healthyPopulation, self.sickPopulation, self.recoveredPopulation)
+        self.statLog.append(self.stats)
+    
+
+    def printStats(self):
+        print(self.stats) 
+    
+    def printStatLog(self): #FIX THIS LATER
+        for i in range(len(self.statLog)):
+            print(self.statLog[i])
         
     def create_population(self, person_count):
+        self.population = person_count
+        self.healthyPopulation = person_count
+        self.updateStats()
         self.people = []
         for _ in range(person_count):
             x = random.randint(0, self.rows - 1)
@@ -59,6 +81,9 @@ class Grid:
             print()  # Move to next line at end of each row
 
     def infectLot(self, num):
+        self.sickPopulation = num
+        self.healthyPopulation -= num
+        self.updateStats()
         for i in range(num):
             if (i < len(self.people)):
              self.people[i].infect()
@@ -70,15 +95,24 @@ class Grid:
         return True
 
     def advanceTime(self):
+        self.turn += 1
         for i in range(len(self.people)):
             self.people[i].move(self)
              
         for i in range(len(self.people)):
             if(self.people[i].state == 'Sick'):
                 self.people[i].reduceSickCount()
+                if(self.people[i].sickCounter == 0):
+                 self.people[i].recover()
+                 self.sickPopulation -= 1
+                 self.recoveredPopulation += 1
+                 self.updateStats()
             elif(self.people[i].state == 'Not Sick (Yet)'):
                 if(self.check_neighbors_sick(self.people[i].position)):
                     self.people[i].infect()
+                    self.healthyPopulation -= 1
+                    self.sickPopulation += 1
+                    self.updateStats()
             elif(self.people[i].state == 'Over it - Immune'):
                 #TODO ?
                 pass

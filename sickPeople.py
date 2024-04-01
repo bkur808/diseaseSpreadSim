@@ -1,6 +1,6 @@
 import random
 
-INFECTIOUS_PERIOD = 100000
+INFECTIOUS_PERIOD = 10
 
 class Individual:
     def __init__(self, position):
