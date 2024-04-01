@@ -2,7 +2,7 @@ import random
 import sickPeople
 
 class Grid:
-    def __init__(self, rows, columns, person_count):
+    def __init__(self, rows = 0, columns = 0, person_count = 0):
         self.rows = rows
         self.columns = columns
         self.size = rows * columns
@@ -17,6 +17,11 @@ class Grid:
         self.statLog = []
         self.create_population(person_count)
         self.updateStats()
+
+    def test1(self):
+        self.__init__(100, 100, 6000)
+        self.infectLot(1)
+
 
     def updateStats(self):
         self.stats = (self.turn, self.population, self.healthyPopulation, self.sickPopulation, self.recoveredPopulation, self.deadPopulation)
@@ -120,10 +125,12 @@ class Grid:
                 pass
             pass
 
-    def runSim1(self):
-        while not self.allSick():
+    def runSim1(self, n):
+       for i in range(n): 
+            self.test1()
+            while not self.allSick():
+                self.printStats()
+                self.advanceTime()
+            print('Final Stats: ')
             self.printStats()
-            self.advanceTime()
-        print('Final Stats: ')
-        self.printStats()
             
