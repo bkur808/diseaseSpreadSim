@@ -6,13 +6,13 @@ class Individual:
         self.state = 'Not Sick (Yet)'
         self.sickCounter = None
         self.deadly = None
+        self.next_to_sick = None
 
     def infect(self, num, d_status = False):
         self.state = 'Sick'
         self.sickCounter = num
         if d_status and random.random() <= 0.1:
             self.die()
-
 
     def recover(self):
         self.state = 'Over it - Immune'
@@ -23,7 +23,7 @@ class Individual:
     def reduceSickCount(self):
         self.sickCounter -= 1
 
-    def remove(self, grid):
+    def removePerson(self, grid):
         x, y = self.position
         self.position = None
         grid.grid[x][y] = None
