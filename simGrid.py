@@ -210,9 +210,6 @@ class Grid:
         for person in self.people:
             person.move(self)
 
-        # List to keep track of individuals who need to be removed
-        individuals_to_remove = []
-
         # Iterate over individuals
         for person in self.people:
             if person.state == 'Sick':
@@ -220,16 +217,14 @@ class Grid:
                 if person.sickCounter == 0:
                     person.recover()
                     self.recoveredPopulation += 1
-                    self.sickPopulation -= 1
-                    # Add individual to the removal list
-                    individuals_to_remove.append(person)
+                    self.sickPopulation -= 1    
             elif person.state == 'Not Sick (Yet)':
                 if self.check_neighbors_sick(person.position):
                     person.next_to_sick = True
 
         # Infect individuals next to sick individuals
         for person in self.people:
-            if person.next_to_sick and person.state != 'Sick':
+            if person.next_to_sick and person.state != 'Sick' and person.state != 'Over it - Immune':
                 person.infect(infectiousPeriod, d_status)
                 if person.state == 'Dead':
                     self.deadPopulation += 1
