@@ -1,14 +1,19 @@
 Disease Spread Simulator
 
-4/1 SIM 1 is somewhat complete w/o visualizations. 
+4/1 
+    TODO: FINISH SIM 1-3 - fix stat tracking in Sim 2 advance_turn logic
+
+    SIM 1 is somewhat complete w/o visualizations. 
     SIM 2 is done other than stat tracking - needs logic to be fixed for recovering/dying
-    SIM 3 is yet to be started
+    SIM 3 is yet to be started - but only adds one logic component 
+            -all stat tracking should work the same
 
     Can test scenarios with the following prompts:
     import simGrid
     test1 = simGrid.Grid() ; test2 = simGrid.Grid()
     test1.runSim1(10)
     test2.runSim2(10)
+
 
 
 3/31
