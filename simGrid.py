@@ -1,4 +1,5 @@
 import random 
+import csv
 import sickPeople
 
 class Grid:
@@ -22,11 +23,6 @@ class Grid:
     def test1(self):
         self.__init__(100, 100, 6000)
         self.infectLot(1)
-
-    def test2(self):
-        self.__init__(100,100,6000)
-        self.infectLot(1,20)
-
 
     def updateStats(self):
         self.stats = (self.turn, self.population, self.healthyPopulation, self.sickPopulation, self.recoveredPopulation, self.deadPopulation)
@@ -178,7 +174,7 @@ class Grid:
         num_simulations = len(infected_counts)
     
         # Calculate average new infected and average total infected at each step
-        for step in range(1, max_steps):  # Skip initial step
+        for step in range(0, max_steps):  # Skip initial step
             total_new_infected = 0
             total_total_infected = 0
             for infected_count_step in infected_counts:
@@ -192,23 +188,30 @@ class Grid:
             avg_total_infected[step] = total_total_infected / num_simulations
 
         # Print averages
-        print("Average number of new people infected at each step:")
-        for step, count in enumerate(avg_new_infected, start=1):
-            print(f"Step {step}: {count:.2f}")
+        #print("Average number of new people infected at each step:")
+        #for step, count in enumerate(avg_new_infected, start=1):
+        #    print(f"Step {step}: {count:.2f}")
 
-        print("\nAverage number of people who are infected at each step:")
-        for step, count in enumerate(avg_total_infected, start=1):
-            print(f"Step {step}: {count:.2f}")
+        #print("\nAverage number of people who are infected at each step:")
+        #for step, count in enumerate(avg_total_infected, start=1):
+        #    print(f"Step {step}: {count:.2f}")
+        with open('disease_stats.csv', 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(['step', 'avg_new_infected', 'avg_total_infected'])
+            for step in range(1, max_steps + 1):
+             writer.writerow([step, avg_new_infected[step - 1], avg_total_infected[step - 1]])
 
+        print("CSV file 'disease_stats.csv' has been generated successfully.")
 
 
     def advance_time_sim2(self, infectiousPeriod=20, d_status=True):
         self.turn += 1
         self.updateStats()
+        self.infectList = []
 
-        # Move individuals
-        for person in self.people:
-            person.move(self)
+        # Move all individuals step
+        for i in range(len(self.people)):
+            self.people[i].move(self)
 
         # Iterate over individuals
         for person in self.people:
@@ -217,14 +220,14 @@ class Grid:
                 if person.sickCounter == 0:
                     person.recover()
                     self.recoveredPopulation += 1
-                    self.sickPopulation -= 1    
-            elif person.state == 'Not Sick (Yet)':
+                    self.sickPopulation -= 1
+                    self.updateStats()    
+            elif person.state == 'Not Sick (Yet)' and person.state != 'Over it - Immune':
                 if self.check_neighbors_sick(person.position):
-                    person.next_to_sick = True
+                    self.infectList.append(person)
 
-        # Infect individuals next to sick individuals
-        for person in self.people:
-            if person.next_to_sick and person.state != 'Sick' and person.state != 'Over it - Immune':
+        # Infect individuals next to sick individuals - if they die - remove
+        for person in self.infectList:
                 person.infect(infectiousPeriod, d_status)
                 if person.state == 'Dead':
                     self.deadPopulation += 1
@@ -237,6 +240,9 @@ class Grid:
                 self.healthyPopulation -= 1
                 self.updateStats()
 
+    def test2(self):
+        self.__init__(100,100,6000)
+        self.infectLot(1,20)
 
     def runSim2(self, n): 
         # List to store infected counts at each step
@@ -246,24 +252,26 @@ class Grid:
     
         for i in range(n): 
             self.test2()
-            # For each step we record this tuple: (Turn, #infected this turn, # of those who have gotten sick, #died this turn, # of those who have died, #recovered this turn, #recovered overall)
+            # For each step we record this tuple: 
+            # (Turn, #infected this turn, # of those who have gotten sick, #died this turn, # of those who have died, #recovered this turn, #recovered overall)
             infected_count_step = [(self.turn, 1, self.sickPopulation, 0, 0, 0, 0)]  
             # Store initial infected count
-            prev_sick_population = self.sickPopulation  
+            
             # Store previous sick population
             prev_recovered_population = 0
             prev_dead_population = 0
         
             while not self.all_recovered_or_dead():
-                self.advance_time_sim2()
+                prev_sick_population = self.sickPopulation  
                 new_recovered_population = self.recoveredPopulation - prev_recovered_population
                 new_dead_population = self.deadPopulation - prev_dead_population
-                new_sick_population = self.sickPopulation - prev_sick_population 
+                new_sick_population = self.sickPopulation - prev_sick_population + new_recovered_population 
                 total_sick_population = self.sickPopulation + self.recoveredPopulation + self.deadPopulation  
                 infected_count_step.append((self.turn, new_sick_population, total_sick_population, new_dead_population, self.deadPopulation, new_recovered_population, self.recoveredPopulation))  
                 prev_sick_population = total_sick_population  
                 prev_dead_population = self.deadPopulation
                 prev_recovered_population = self.recoveredPopulation
+                self.advance_time_sim2()
             
             infected_counts.append(infected_count_step)  
             print('Simulation ', i + 1, ' Final Stats: ')
@@ -271,8 +279,8 @@ class Grid:
             max_steps = max(max_steps, len(infected_count_step))  
 
         # Initialize lists to store average values for each statistic
-        avg_new_infected = [0] * max_steps
-        avg_total_infected = [0] * max_steps
+        avg_new_infected = [1] * max_steps
+        avg_total_infected = [1] * max_steps
         avg_new_dead = [0] * max_steps
         avg_dead = [0] * max_steps
         avg_new_recoveries = [0] * max_steps
@@ -310,7 +318,7 @@ class Grid:
             avg_recovered[step] = total_recovered / num_simulations
 
         # Print averages
-        print("Average number of people infected at each step:")
+        print("Average number of new people infected at each step:")
         for step, count in enumerate(avg_new_infected, start=1):
             print(f"Step {step}: {count:.2f}")
 
@@ -318,7 +326,7 @@ class Grid:
         for step, count in enumerate(avg_total_infected, start=1):
             print(f"Step {step}: {count:.2f}")    
 
-        print("Average number of new people who die at each step:")
+        print("Average number of new deaths at each step:")
         for step, count in enumerate(avg_new_dead, start = 1):
             print(f"Step {step}: {count:.2f}")
 
@@ -326,10 +334,10 @@ class Grid:
         for step, count in enumerate(avg_dead, start=1):
             print(f"Step {step}: {count:.2f}")
 
-        print("\nAverage number of new people who recover at each step:")
+        print("\nAverage number of new recoveries at each step:")
         for step, count in enumerate(avg_new_recoveries, start=1):
             print(f"Step {step}: {count:.2f}")    
 
-        print("Average number of people who have already recovered at each step:")
+        print("Average number of people who have recovered at each step:")
         for step, count in enumerate(avg_recovered, start = 1):
             print(f"Step {step}: {count:.2f}")    
