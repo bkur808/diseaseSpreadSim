@@ -139,9 +139,13 @@ class Grid:
                 if cell is None:
                     print("-", end=" ")  # Print dash for empty space
                 elif isinstance(cell, sickPeople.Individual):
-                    if cell.state == 'Susceptible':
-                        print("O", end=" ")  # Print $ for individual
-                    elif cell.state == 'Infected':
+                    if cell.state == 'Susceptible' and cell.facemask == True:
+                        print("8", end=" ")  # Print $ for individual
+                    elif cell.state == 'Susceptible' and cell.facemask == None:
+                        print("O", end=" ")
+                    elif cell.state == 'Infected' and cell.facemask == True:
+                        print("?", end=" ")
+                    elif cell.state == 'Infected' and cell.facemask == None:
                         print("X", end=" ")
                     elif cell.state == 'Recovered':
                         print("0", end=" ")        
@@ -181,11 +185,12 @@ class Grid:
         for neighbor in neighbors:
             nx, ny = neighbor
             this_neighbor = self.grid[nx][ny]
-            if self.grid[nx][ny] is not None and this_neighbor.state == 'Infected' and this_neighbor.facemask == True:
-                if random.random() <= 0.5:
+            if self.grid[nx][ny] is not None and this_neighbor.state == 'Infected':
+                if this_neighbor.facemask:
+                    if random.random() <= 0.5:
+                        return True
+                else: 
                     return True
-            elif self.grid[nx][ny] is not None and this_neighbor.state == 'Infected' and this_neighbor.facemask == False:
-                return True
         return False
 
     def all_sick(self):
@@ -381,7 +386,7 @@ class Grid:
 
 
     def test3(self): # for sim3
-        self.__init__3(20, 20, 240)
+        self.__init__3(100, 100, 6000)
         self.infect_lot(1, 20, True)  
         # Turn 1: P - 6000, HP 5999, SP 1, RP 0, DP 0, IT = 1, RT = 0, DT = 0
 
@@ -389,32 +394,35 @@ class Grid:
         self.turn += 1                      #  advance a turn in stats
         self.reset_turn_stats()             #  reset the turn_stats to 0's 
         self.infect_list = []               #  reset the infect_list to empty
+        self.update_stats()
 
         # First - move everyone on the board
         for person in self.people:
-            if(person.state != 'Dead' and person.state != 'Infected'):
+            if(person.state != 'Dead'):
                 person.move_person(self)
 
         # Second - Go through population and either do nothing (infected) or add to infect_list (susceptible and next to sick)     
         for person in self.people:
-            if(person.state == 'Susceptible' and self.check_neighbors_sick_with_mask(person.position) == True):
-                self.infect_list.append(person)
-            elif(person.state == 'Infected'):
-                person.reduce_sick_count()
-                if(person.sickCounter == 0):
-                    person.recover()
-                    self.recovered_this_turn += 1
-                    self.recovered_population += 1
-                if(person.state == 'Dead'):
-                    person.remove_person(self)
-                    self.died_this_turn += 1
-                    self.dead_population += 1    
-            elif(person.state == 'Recovered'):
-                None
+            if(person.state!= 'Dead'):
+                x,y = person.position
+                if(person.state == 'Susceptible' and self.check_neighbors_sick_with_mask((x,y)) == True):
+                    self.infect_list.append(person)
+                elif(person.state == 'Infected'):
+                    person.reduce_sick_count()
+                    if(person.sickCounter == 0):
+                        person.recover()
+                        self.recovered_this_turn += 1
+                        self.recovered_population += 1
+                    if(person.state == 'Dead'):
+                        person.remove_person(self)
+                        self.died_this_turn += 1
+                        self.dead_population += 1    
+                elif(person.state == 'Recovered'):
+                    None
 
         # Third - Infect (separate loop to prevent sick chaining) - update all stats
         for person in self.infect_list:
-            person.infect(20, True)
+            person.infect(20, True, False)
             if person.state == 'Infected':
                 self.infected_this_turn += 1
                 self.healthy_population -= 1
@@ -426,6 +434,7 @@ class Grid:
     def run_sim3(self, n): # for sim3
         all_sim_counts = []  # List to store infected counts at each step
         max_steps = 0  # Initialize max_steps to 0
+        avg_mask_count = 0
 
         # This loop will run a full simulation until every person is sick n times
         for i in range(n): 
@@ -439,6 +448,7 @@ class Grid:
             self.sim3_print()
             #print(self.stat_log)
             max_steps = max(max_steps, self.turn)  # Update max_steps
+            avg_mask_count += self.mask_count
 
         avg_total_infected = [0] * (max_steps+1)
         avg_total_recovered = [0] * (max_steps+1)
@@ -475,9 +485,11 @@ class Grid:
             avg_total_recovered[i] /= float(n)
             avg_total_dead[i] /= float(n)
 
+        avg_mask_count /= float(n)
+
         with open('disease_stats_sim3.csv', 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['Turn', 'Avg_New_Infections', 'Avg_New_Recoveries', 'Avg_New_Deaths','Avg_Total_Infected', 'Avg_Total_Recoveries','Avg_New_Deaths'])
+            writer.writerow(['Turn', 'Avg_New_Infections', 'Avg_New_Recoveries', 'Avg_New_Deaths','Avg_Total_Infected', 'Avg_Total_Recoveries','Avg_New_Deaths', 'Avg_Mask_Count', avg_mask_count])
             for i in range(0, max_steps+1):
                 writer.writerow([i, avg_new_infected[i], avg_new_recovered[i], avg_new_dead[i], avg_total_infected[i], avg_total_recovered[i], avg_total_dead[i]])
                 

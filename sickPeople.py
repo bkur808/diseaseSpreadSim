@@ -9,12 +9,12 @@ class Individual:
         self.next_to_sick = None
         self.facemask = None
 
-    def infect(self, num = 1000, d_status = False):
-        if self.facemask == None or self.facemask == False:
+    def infect(self, num = 1000, d_status = False, first_turn = True):
+        if self.facemask == None or first_turn == True:
             self.state = 'Infected'
             self.sickCounter = num
             self.deadly = d_status
-        elif self.facemask == True:
+        elif self.facemask == True and first_turn != True:
             if random.random() <= 0.5:
                 self.state = 'Infected'
                 self.sickCounter = num
