@@ -7,11 +7,18 @@ class Individual:
         self.sickCounter = None
         self.deadly = None
         self.next_to_sick = None
+        self.facemask = None
 
     def infect(self, num = 1000, d_status = False):
-        self.state = 'Infected'
-        self.sickCounter = num
-        self.deadly = d_status
+        if self.facemask == None or self.facemask == False:
+            self.state = 'Infected'
+            self.sickCounter = num
+            self.deadly = d_status
+        elif self.facemask == True:
+            if random.random() <= 0.5:
+                self.state = 'Infected'
+                self.sickCounter = num
+                self.deadly = d_status
 
     def recover(self):
         self.state = 'Recovered'
