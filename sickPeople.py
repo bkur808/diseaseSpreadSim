@@ -27,10 +27,11 @@ class Individual:
         self.state = 'Dead'
 
     def reduce_sick_count(self):
-        if self.deadly and random.random() <= 0.0052541741:
+        if self.deadly and random.random()  <= 0.0052541741:
             self.die()
         if self.state == 'Infected':
             self.sickCounter -= 1
+
 
     def move_person(self, grid):
         x, y = self.position

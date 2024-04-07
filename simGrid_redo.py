@@ -15,6 +15,7 @@ class Grid:
         self.sick_population = 0
         self.recovered_population = 0
         self.dead_population = 0
+        self.current_sick_count = 0
         self.stat_log = []
         self.infected_this_turn = 0
         self.recovered_this_turn = 0
@@ -35,6 +36,7 @@ class Grid:
         self.sick_population = 0
         self.recovered_population = 0
         self.dead_population = 0
+        self.current_sick_count = 0
         self.stat_log = []
         self.infected_this_turn = 0
         self.recovered_this_turn = 0
@@ -84,6 +86,7 @@ class Grid:
         self.died_this_turn = 0
 
     def update_stats(self):
+        self.current_sick_count = self.sick_population - self.recovered_population
         self.stats = (self.turn, self.population, self.healthy_population, self.sick_population, self.recovered_population, self.dead_population, self.infected_this_turn, self.recovered_this_turn, self.died_this_turn)
 
     def print_stats(self):
@@ -398,7 +401,9 @@ class Grid:
 
         # First - move everyone on the board
         for person in self.people:
-            if(person.state != 'Dead' and person.state != 'Infected'):
+            if person.state == 'Susceptible': 
+                person.move_person(self)
+            elif person.state == 'Infected' and ((person.sickCounter >= 18) or (person.sickCounter <3)):
                 person.move_person(self)
 
         # Second - Go through population and either do nothing (infected) or add to infect_list (susceptible and next to sick)     
