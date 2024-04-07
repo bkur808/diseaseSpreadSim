@@ -398,7 +398,7 @@ class Grid:
 
         # First - move everyone on the board
         for person in self.people:
-            if(person.state != 'Dead'):
+            if(person.state != 'Dead' and person.state != 'Infected'):
                 person.move_person(self)
 
         # Second - Go through population and either do nothing (infected) or add to infect_list (susceptible and next to sick)     
@@ -489,7 +489,7 @@ class Grid:
 
         with open('disease_stats_sim3.csv', 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['Turn', 'Avg_New_Infections', 'Avg_New_Recoveries', 'Avg_New_Deaths','Avg_Total_Infected', 'Avg_Total_Recoveries','Avg_New_Deaths', 'Avg_Mask_Count', avg_mask_count])
+            writer.writerow(['Turn', 'Avg_New_Infections', 'Avg_New_Recoveries', 'Avg_New_Deaths','Avg_Total_Infected', 'Avg_Total_Recoveries','Avg_New_Deaths', 'Avg_Mask_Count: ', avg_mask_count])
             for i in range(0, max_steps+1):
                 writer.writerow([i, avg_new_infected[i], avg_new_recovered[i], avg_new_dead[i], avg_total_infected[i], avg_total_recovered[i], avg_total_dead[i]])
                 
