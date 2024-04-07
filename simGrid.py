@@ -20,10 +20,6 @@ class Grid:
         self.create_population(person_count)
         self.updateStats()
 
-    def test1(self):
-        self.__init__(100, 100, 6000)
-        self.infectLot(1)
-
     def updateStats(self):
         self.stats = (self.turn, self.population, self.healthyPopulation, self.sickPopulation, self.recoveredPopulation, self.deadPopulation)
         self.statLog.append(self.stats)
@@ -122,11 +118,11 @@ class Grid:
         self.turn += 1
         self.updateStats()
         for i in range(len(self.people)):
-            self.people[i].move(self)
+            self.people[i].move_person(self)
              
         for i in range(len(self.people)):
             if(self.people[i].state == 'Sick'):
-                self.people[i].reduceSickCount()
+                self.people[i].reduce_sick_count()
                 if(self.people[i].sickCounter == 0):
                  self.people[i].recover()
                  self.sickPopulation -= 1
@@ -146,6 +142,12 @@ class Grid:
                 self.healthyPopulation -= 1
                 self.sickPopulation += 1
                 self.updateStats()
+
+
+    def test1(self):
+        self.__init__(100, 100, 6000)
+        self.infectLot(1)
+            
 
     def runSim1(self, n):
         infectiousPeriod = 1000
@@ -211,12 +213,12 @@ class Grid:
 
         # Move all individuals step
         for i in range(len(self.people)):
-            self.people[i].move(self)
+            self.people[i].move_person(self)
 
         # Iterate over individuals
         for person in self.people:
             if person.state == 'Sick':
-                person.reduceSickCount()
+                person.reduce_sick_count()
                 if person.sickCounter == 0:
                     person.recover()
                     self.recoveredPopulation += 1

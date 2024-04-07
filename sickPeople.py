@@ -3,32 +3,29 @@ import random
 class Individual:
     def __init__(self, position):
         self.position = position
-        self.state = 'Not Sick (Yet)'
+        self.state = 'Susceptible'
         self.sickCounter = None
         self.deadly = None
         self.next_to_sick = None
 
-    def infect(self, num, d_status = False):
-        self.state = 'Sick'
+    def infect(self, num = 1000, d_status = False):
+        self.state = 'Infected'
         self.sickCounter = num
-        if d_status and random.random() <= 0.1:
-            self.die()
+        self.deadly = d_status
 
     def recover(self):
-        self.state = 'Over it - Immune'
+        self.state = 'Recovered'
 
     def die(self):
         self.state = 'Dead'
 
-    def reduceSickCount(self):
-        self.sickCounter -= 1
+    def reduce_sick_count(self):
+        if self.deadly and random.random() <= 0.0052541741:
+            self.die()
+        if self.state == 'Infected':
+            self.sickCounter -= 1
 
-    def removePerson(self, grid):
-        x, y = self.position
-        self.position = None
-        grid.grid[x][y] = None
-
-    def move(self, grid):
+    def move_person(self, grid):
         x, y = self.position
         neighbors = grid.get_neighbors((x, y))
         if neighbors:
@@ -38,7 +35,14 @@ class Individual:
             # Update grid and individual's position
             grid.grid[x][y] = None
             grid.grid[new_position[0]][new_position[1]] = self
-            self.position = new_position
+            self.position = new_position    
+
+    def remove_person(self, grid):
+        x, y = self.position
+        self.position = None
+        grid.grid[x][y] = None
+
+   
 
     
 
