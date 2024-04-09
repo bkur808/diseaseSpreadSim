@@ -3,7 +3,6 @@ import csv
 import sickPeople
 
 class Grid:
-
     def __init__(self, rows = 0, columns = 0, person_count = 0):
         self.rows = rows
         self.columns = columns
