@@ -2,9 +2,9 @@ Disease Spread Simulator
 4/9
 
 HOW TO RUN CODE CURRENTLY:
-    import simGrid_redo ; test = simGrid_redo.Grid() ; test.runSim1(100) # This will run the first sim 100 times
-    import simGrid_redo ; test = simGrid_redo.Grid() ; test.runSim2(100) # This will run the second sim 100 times
-    import simGrid_redo ; test = simGrid_redo.Grid() ; test.runSim3(100) # This will run the third sim 100 times
+    import simGrid_redo ; test = simGrid.Grid() ; test.runSim1(100) # This will run the first sim 100 times
+    import simGrid_redo ; test = simGrid.Grid() ; test.runSim2(100) # This will run the second sim 100 times
+    import simGrid_redo ; test = simGrid.Grid() ; test.runSim3(100) # This will run the third sim 100 times
 
 If you want to mess around with testing a grid you can do as follows:
     test.test1() ; test.print_grid() ; test.print_stats() ; test.stat_log ; test.advance_turn_sim1()
@@ -16,8 +16,8 @@ If you want to mess around with testing a grid you can do as follows:
 
 You can also instantiate a grid through the following steps below:
 
-1 - import simGrid_redo
-2 - test = simGrid_redo.Grid(X,Y,Z,Masks?) 
+1 - import simGrid
+2 - test = simGrid.Grid(X,Y,Z,Masks?) 
         In place of X put the rows
         In place of Y put the columns
         In place of Z put the starting population
