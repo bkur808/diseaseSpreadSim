@@ -15,7 +15,6 @@ class Grid:
         self.sick_population = 0
         self.recovered_population = 0
         self.dead_population = 0
-        self.current_sick_count = 0
         self.stat_log = []
         self.infected_this_turn = 0
         self.recovered_this_turn = 0
@@ -36,7 +35,6 @@ class Grid:
         self.sick_population = 0
         self.recovered_population = 0
         self.dead_population = 0
-        self.current_sick_count = 0
         self.stat_log = []
         self.infected_this_turn = 0
         self.recovered_this_turn = 0
@@ -86,7 +84,6 @@ class Grid:
         self.died_this_turn = 0
 
     def update_stats(self):
-        self.current_sick_count = self.sick_population - self.recovered_population
         self.stats = (self.turn, self.population, self.healthy_population, self.sick_population, self.recovered_population, self.dead_population, self.infected_this_turn, self.recovered_this_turn, self.died_this_turn)
 
     def print_stats(self):
@@ -322,6 +319,7 @@ class Grid:
             self.infected_this_turn += 1
             self.healthy_population -= 1
             self.sick_population += 1
+            
         self.update_stats()
         self.stat_log.append(self.stats)    #  record last turn's stats in stat_log  
 
@@ -335,7 +333,7 @@ class Grid:
             # Instantiate a grid 100x100 w/ population 6000
             self.test2()
             # We also infect_lot which leaves us w/ Turn 1: P - 6000, HP 5999, SP 1, RP 0, DP 0, IT = 1, RT = 0, DT = 0
-            while not self.all_recovered_or_dead():
+            while not self.all_recovered_or_dead_or_healthy():
                 self.advance_turn_sim2()
             all_sim_counts.append(self.stat_log)  # Append infected count at each step for this run
             print('Simulation ', i + 1, ' Final Stats: ')
@@ -424,7 +422,6 @@ class Grid:
                         self.dead_population += 1    
                 elif(person.state == 'Recovered'):
                     None
-
         # Third - Infect (separate loop to prevent sick chaining) - update all stats
         for person in self.infect_list:
             person.infect(20, True, False)
@@ -432,6 +429,7 @@ class Grid:
                 self.infected_this_turn += 1
                 self.healthy_population -= 1
                 self.sick_population += 1
+        
         self.update_stats()
         self.stat_log.append(self.stats)    #  record last turn's stats in stat_log  
 
