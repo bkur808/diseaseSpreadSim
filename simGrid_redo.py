@@ -90,19 +90,24 @@ class Grid:
     def print_grid(self):
         for row in self.grid:
             for cell in row:
-                if cell is None:
+                if cell is None: 
                     print("-", end=" ")  # Print dash for empty space
-                elif isinstance(cell, sickPeople.Individual):
+                elif isinstance(cell, sickPeople.Individual):           #If the cell is an individual we will print out  a symbol based on state and masks
                     if cell.state == 'Susceptible' and cell.facemask == True:
-                        print("8", end=" ")  # Print $ for individual
+                        print("8", end=" ")  
+
                     elif cell.state == 'Susceptible' and cell.facemask == None:
                         print("O", end=" ")
+
                     elif cell.state == 'Infected' and cell.facemask == True:
                         print("?", end=" ")
+
                     elif cell.state == 'Infected' and cell.facemask == None:
                         print("X", end=" ")
+
                     elif cell.state == 'Recovered':
-                        print("0", end=" ")        
+                        print("0", end=" ") 
+
             print()  # Move to next line at end of each row         
 
     def get_neighbors(self, position):
