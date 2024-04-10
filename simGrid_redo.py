@@ -1,6 +1,7 @@
 import random 
 import csv
 import sickPeople
+from simVis import GridVisualizer
 
 class Grid:
     def __init__(self, rows = 0, columns = 0, person_count = 0, with_masks = False): #Our default initializer - takes in grid dimensions and # people
@@ -8,7 +9,7 @@ class Grid:
         self.columns = columns
         self.size = rows * columns
         self.grid = [[None for _ in range(columns)] for _ in range(rows)]   # grid is initalized to size but with None in every position
-        self.occupied_positions = set()                                     # <- for keeping track of what spots are open
+        self.occupied_positions = set()                                         # <- for keeping track of what spots are open
 
         #starting stats
         self.turn = 0
@@ -328,7 +329,7 @@ class Grid:
 
         with open('disease_stats_sim2.csv', 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['Turn', 'Avg_New_Infections', 'Avg_New_Recoveries', 'Avg_New_Deaths','Avg_Total_Infected', 'Avg_Total_Recoveries','Avg_New_Deaths'])
+            writer.writerow(['Turn', 'Avg_New_Infections', 'Avg_New_Recoveries', 'Avg_New_Deaths','Avg_Total_Infected', 'Avg_Total_Recoveries','Avg_Total_Deaths'])
             for i in range(0, max_steps+1):
                 writer.writerow([i, avg_new_infected[i], avg_new_recovered[i], avg_new_dead[i], avg_total_infected[i], avg_total_recovered[i], avg_total_dead[i]])
                 
@@ -442,8 +443,27 @@ class Grid:
 
         with open('disease_stats_sim3.csv', 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['Turn', 'Avg_New_Infections', 'Avg_New_Recoveries', 'Avg_New_Deaths','Avg_Total_Infected', 'Avg_Total_Recoveries','Avg_New_Deaths', 'Avg_Mask_Count - ', avg_mask_count])
+            writer.writerow(['Turn', 'Avg_New_Infections', 'Avg_New_Recoveries', 'Avg_New_Deaths','Avg_Total_Infected', 'Avg_Total_Recoveries','Avg_Total_Deaths', 'Avg_Mask_Count - ', avg_mask_count])
             for i in range(0, max_steps+1):
                 writer.writerow([i, avg_new_infected[i], avg_new_recovered[i], avg_new_dead[i], avg_total_infected[i], avg_total_recovered[i], avg_total_dead[i]])
                 
         print("CSV file 'disease_stats_sim3.csv' has been generated successfully.")
+
+    def run_sim1_vis(self):
+        self.test1()  # Initialize simulation
+        visualizer = GridVisualizer(self)  # Create an instance of GridVisualizer
+        visualizer.animate1(frames=100)  # Call animate method on the visualizer instance
+
+    def run_sim2_vis(self):
+        self.test2()  # Initialize simulation
+        visualizer = GridVisualizer(self)  # Create an instance of GridVisualizer
+        visualizer.animate2(frames=100)  # Call animate method on the visualizer instance
+
+    def run_sim3_vis(self):
+        self.test3()  # Initialize simulation
+        visualizer = GridVisualizer(self)  # Create an instance of GridVisualizer
+        visualizer.animate3(frames=100)  # Call animate method on the visualizer instance
+
+
+
+        
