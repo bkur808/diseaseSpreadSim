@@ -9,6 +9,7 @@ class Individual:
         self.next_to_sick = None
         self.facemask = None
         self.immune = None
+        self.immortal = None
 
     def infect(self, num = 1000, d_status = False, first_turn = True): 
         if self.immune != True:
@@ -27,7 +28,8 @@ class Individual:
         self.immune = True
 
     def die(self):
-        self.state = 'Dead'
+        if not self.immortal:
+            self.state = 'Dead'
 
     def reduce_sick_count(self):
         if self.deadly and random.random()  <= 0.0052541741:

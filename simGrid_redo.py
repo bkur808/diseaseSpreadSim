@@ -49,13 +49,15 @@ class Grid:
             self.grid[x][y] = individual
             self.update_stats() 
 
-    def infect_lot(self, num, infectious_period = 1000, deadly_status = False): # for making people sick on turn 1
+    def infect_lot(self, num, infectious_period = 1000, deadly_status = False, immortals = False): # for making people sick on turn 1
         self.sick_population += num
         self.healthy_population -= num
         self.infected_this_turn += num
         for i in range(num):
             if (i < len(self.people)):
                 self.people[i].infect(infectious_period, deadly_status)
+                if immortals == True:
+                    self.people[i].immortal = True
         self.update_stats()
         self.stat_log.append(self.stats)    #  record turn's stats in stat_log        
 
@@ -160,7 +162,7 @@ class Grid:
 
     def test3(self): # for sim3
         self.__init__(100, 100, 6000, True) #This time we instantiate the population with around 50% mask adherance 
-        self.infect_lot(1, 20, True)        #Otherwise same sickness as test 2
+        self.infect_lot(1, 20, True, True)        #Otherwise same sickness as test 2
         # Turn 1: P - 6000, Current_HealthyPop 5999, Total_InfectedPop 1, Total_RecoveredPop 0, Total_DeadPop 0, Infected/T 0, Recovered/T 0, Died/T 0    
 
 
@@ -344,9 +346,9 @@ class Grid:
 
         # First - move everyone on the board
         for person in self.people:
-            if person.state == 'Susceptible': 
+            if person.state == 'Susceptible' or person.state == 'Recovered': 
                 person.move_person(self)
-            elif person.state == 'Infected' and ((person.sickCounter >= 18) or (person.sickCounter <3)):
+            elif person.state == 'Infected' and ((person.sickCounter >= 15) or (person.sickCounter <3)):
                 person.move_person(self)
 
         # Second - Go through population and either do nothing (infected) or add to infect_list (susceptible and next to sick)     
