@@ -1,4 +1,4 @@
-Turn,Avg_New_Infections,Avg_New_Recoveries,Avg_New_Deaths,Avg_Total_Infected,Avg_Total_Recoveries,Avg_New_Deaths
+Turn,Avg_New_Infections,Avg_New_Recoveries,Avg_New_Deaths,Avg_Total_Infected,Avg_Total_Recoveries,Avg_Total_Deaths
 0,1.0,0.0,0.0,1.0,0.0,0.0
 1,4.803,0.0,0.0,5.803,0.0,0.0
 2,9.425,0.0,0.026,15.228,0.0,0.026
