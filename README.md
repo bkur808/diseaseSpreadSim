@@ -6,6 +6,8 @@ HOW TO RUN CODE CURRENTLY:
     import simGrid_redo ; test = simGrid.Grid() ; test.runSim2(100) # This will run the second sim 100 times
     import simGrid_redo ; test = simGrid.Grid() ; test.runSim3(100) # This will run the third sim 100 times
 
+    import simGrid_redo ; test = simGrid_redo.Grid() ; test.test1() ; test.run_sim1_vis() # This will run a visualizer for a sim.
+
 If you want to mess around with testing a grid you can do as follows:
     test.test1() ; test.print_grid() ; test.print_stats() ; test.stat_log ; test.advance_turn_sim1()
     .......... OUTPUT WILL GO HERE WHEN YOU RUN ABOVE CODE
