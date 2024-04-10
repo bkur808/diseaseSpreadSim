@@ -49,7 +49,7 @@ class Grid:
             self.grid[x][y] = individual
             self.update_stats() 
 
-    def infect_lot(self, num, infectious_period = 1000, deadly_status = False, immortals = False): # for making people sick on turn 1
+    def infect_lot(self, num, infectious_period = 1000, deadly_status = False, immortals = False): # for making people sick on turn 1 - can also make people sick+immortal lol
         self.sick_population += num
         self.healthy_population -= num
         self.infected_this_turn += num
@@ -157,7 +157,7 @@ class Grid:
     
     def test2(self): # for sim2
         self.__init__(100, 100, 6000)       
-        self.infect_lot(1, 20, True)        #Main difference is sick period of 20 turns, deadly sickness = True
+        self.infect_lot(1, 20, True, True)        #Main difference is sick period of 20 turns, deadly sickness = True
         # Turn 1: P - 6000, Current_HealthyPop 5999, Total_InfectedPop 1, Total_RecoveredPop 0, Total_DeadPop 0, Infected/T 0, Recovered/T 0, Died/T 0    
 
     def test3(self): # for sim3
