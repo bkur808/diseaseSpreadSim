@@ -43,7 +43,7 @@ class Grid:
             self.occupied_positions.add((x, y))
             individual = sickPeople.Individual((x,y))
             if with_masks:
-                if random.random() <= 0.5:
+                if random.random() <= 0.5: #50 PERCENT MASKING
                     individual.facemask = True
                     self.mask_count += 1
             self.people.append(individual)
@@ -132,7 +132,7 @@ class Grid:
                 if not this_neighbor.facemask or not with_masks:
                     return True                             #if you are next to a sick person without a mask (or no masks in the first place in the sim) - return True
                 elif with_masks and this_neighbor.facemask:
-                    if random.random() <= 0.5:
+                    if random.random() <= 0.5: #MASK MORE EFFECTIVE RUN IS .2 - .5 IS DEFAULT
                         return True                         #if the sim has facemasks & this neighbor is wearing one - only 50% chance to show up as sick (spread disease from this neighbor)
         return False                                        #if nobody next to position is sick or if facemasks work well enough return false for next to sick
 
