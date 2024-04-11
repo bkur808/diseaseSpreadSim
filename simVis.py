@@ -8,6 +8,7 @@ class GridVisualizer:
         self.grid = grid
         self.fig, self.ax = plt.subplots()
         self.squares = None
+        self.repeat_anim = True
         self.turn = 0
 
     def init_plot(self):
@@ -20,47 +21,7 @@ class GridVisualizer:
         self.ax.set_xlim(0, self.grid.columns)
         self.ax.set_ylim(0, self.grid.rows)
 
-    def update_plot1(self, frame):
-        for i in range(self.grid.rows):
-            for j in range(self.grid.columns):
-                cell = self.grid.grid[i][j]
-                if cell is None:
-                    color = 'white'  # Empty cell
-                elif cell.state == 'Susceptible':
-                    color = 'green' if not cell.facemask else 'lightgreen'  # Susceptible with or without facemask
-                elif cell.state == 'Infected':
-                    color = 'red'  # Infected
-                elif cell.state == 'Recovered':
-                    color = 'blue'  # Recovered
-                elif cell.state == 'Dead':
-                    None
-                self.squares[i, j].set_facecolor(color)
-        self.grid.advance_turn_sim1()
-        self.turn += 1
-        if self.grid.all_sick():
-            return
-
-    def update_plot2(self, frame):
-        for i in range(self.grid.rows):
-            for j in range(self.grid.columns):
-                cell = self.grid.grid[i][j]
-                if cell is None:
-                    color = 'white'  # Empty cell
-                elif cell.state == 'Susceptible':
-                    color = 'green' if not cell.facemask else 'lightgreen'  # Susceptible with or without facemask
-                elif cell.state == 'Infected':
-                    color = 'red'  # Infected
-                elif cell.state == 'Recovered':
-                    color = 'blue'  # Recovered
-                elif cell.state == 'Dead':
-                    None
-                self.squares[i, j].set_facecolor(color)
-        self.grid.advance_turn_sim2()
-        self.turn += 1
-        if self.grid.all_sick_dead_or_healthy():
-            return
-
-    def update_plot3(self, frame):
+    def update_vis_grid(self):
         for i in range(self.grid.rows):
             for j in range(self.grid.columns):
                 cell = self.grid.grid[i][j]
@@ -73,24 +34,49 @@ class GridVisualizer:
                 elif cell.state == 'Recovered':
                     color = 'blue'  # Recovered
                 elif cell.state == 'Dead':
-                    None
+                    continue
                 self.squares[i, j].set_facecolor(color)
+
+    def update_plot1(self, frame):
+        self.update_vis_grid()
+        self.grid.advance_turn_sim1()
+        self.turn += 1
+        if self.grid.all_sick():
+            self.update_vis_grid()
+            self.repeat_anim = False
+            return False
+
+    def update_plot2(self, frame):
+        self.update_vis_grid()
+        self.grid.advance_turn_sim2()
+        self.turn += 1
+        if self.grid.all_recovered_dead_or_healthy():
+            self.update_vis_grid()
+            self.repeat_anim = False
+            return False
+
+    def update_plot3(self, frame):
+        self.update_vis_grid()
         self.grid.advance_turn_sim3()
         self.turn += 1
-        if self.grid.all_sick_dead_or_healthy():
-            return
+        if self.grid.all_recovered_dead_or_healthy():
+            self.update_vis_grid()
+            self.repeat_anim = False
+            return False
+        
+            
 
-    def animate1(self, frames):
+    def animate1(self):
         self.init_plot()  # Initialize the plot
-        anim = animation.FuncAnimation(self.fig, self.update_plot1, frames=frames, interval=1000, repeat=False)
+        anim = animation.FuncAnimation(self.fig, self.update_plot1,interval=1000, repeat=self.repeat_anim)
         plt.show()
 
-    def animate2(self, frames):
+    def animate2(self):
         self.init_plot()  # Initialize the plot
-        anim = animation.FuncAnimation(self.fig, self.update_plot2, frames=frames, interval=1000, repeat=False)
+        anim = animation.FuncAnimation(self.fig, self.update_plot2, interval=1000, repeat=self.repeat_anim)
         plt.show()
 
-    def animate3(self, frames):
+    def animate3(self):
         self.init_plot()  # Initialize the plot
-        anim = animation.FuncAnimation(self.fig, self.update_plot3, frames=frames, interval=1000, repeat=False)
+        anim = animation.FuncAnimation(self.fig, self.update_plot3, interval=1000, repeat=self.repeat_anim)
         plt.show()

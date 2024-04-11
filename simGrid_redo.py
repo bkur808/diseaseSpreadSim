@@ -166,6 +166,10 @@ class Grid:
         self.infect_lot(1, 20, True, True)        #Otherwise same sickness as test 2
         # Turn 1: P - 6000, Current_HealthyPop 5999, Total_InfectedPop 1, Total_RecoveredPop 0, Total_DeadPop 0, Infected/T 0, Recovered/T 0, Died/T 0    
 
+    def test3_vis(self):
+        self.__init__(50,50,1500,True)
+        self.infect_lot(1,20,True,True)
+
 
     # Coding up specific simulation scenarios
     def advance_turn_sim1(self):
@@ -246,6 +250,8 @@ class Grid:
         for person in self.people:
             if(person.state != 'Dead'):
                 person.move_person(self)
+            else:
+                pass
 
         # Second - Go through population and either do nothing (infected) or add to infect_list (susceptible and next to sick)     
         for person in self.people:
@@ -351,6 +357,8 @@ class Grid:
                 person.move_person(self)
             elif person.state == 'Infected' and ((person.sickCounter >= 15) or (person.sickCounter <3)):
                 person.move_person(self)
+            else:
+                pass
 
         # Second - Go through population and either do nothing (infected) or add to infect_list (susceptible and next to sick)     
         for person in self.people:
@@ -452,17 +460,17 @@ class Grid:
     def run_sim1_vis(self):
         self.test1()  # Initialize simulation
         visualizer = GridVisualizer(self)  # Create an instance of GridVisualizer
-        visualizer.animate1(frames=100)  # Call animate method on the visualizer instance
+        visualizer.animate1()  # Call animate method on the visualizer instance
 
     def run_sim2_vis(self):
         self.test2()  # Initialize simulation
         visualizer = GridVisualizer(self)  # Create an instance of GridVisualizer
-        visualizer.animate2(frames=100)  # Call animate method on the visualizer instance
+        visualizer.animate2()  # Call animate method on the visualizer instance
 
     def run_sim3_vis(self):
         self.test3()  # Initialize simulation
         visualizer = GridVisualizer(self)  # Create an instance of GridVisualizer
-        visualizer.animate3(frames=100)  # Call animate method on the visualizer instance
+        visualizer.animate3()  # Call animate method on the visualizer instance
 
 
 
