@@ -14,6 +14,7 @@ There are three basic ways to run our simulations, each will be explained below:
         1 - Manually - turn-by-turn
         2 - Automatically with Visual
         3 - For Statistical Analysis
+        *For all scenarios assuming running a terminal with python3 installed, and all source files in source directory 
 
 1 - Manually:
 
