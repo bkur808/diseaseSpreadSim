@@ -63,8 +63,6 @@ class GridVisualizer:
             self.update_vis_grid()
             self.repeat_anim = False
             return False
-        
-            
 
     def animate1(self):
         self.init_plot()  # Initialize the plot

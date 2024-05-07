@@ -1,14 +1,17 @@
 import random 
 import csv
 import sickPeople
+from simVis import GridVisualizer
 
 class Grid:
-    def __init__(self, rows = 0, columns = 0, person_count = 0, with_masks = False): #Our default initializer - takes in grid dimensions and # people
+    def __init__(self, rows = 0, columns = 0, person_count = 0, with_masks = False, mask_percentage = 0.5): 
+        #Default initializer - takes in grid dimensions, # people, and whether or not masks are included
         self.rows = rows
         self.columns = columns
         self.size = rows * columns
-        self.grid = [[None for _ in range(columns)] for _ in range(rows)]   # grid is initalized to size but with None in every position
-        self.occupied_positions = set()                                     # <- for keeping track of what spots are open
+        self.grid = [[None for _ in range(columns)] for _ in range(rows)]       
+        # grid is initalized to size ((x,y) coordinate system - but with None in every position
+        self.occupied_positions = set()     # <- for keeping track of what spots are open
 
         #starting stats
         self.turn = 0
@@ -17,18 +20,15 @@ class Grid:
         self.sick_population = 0
         self.recovered_population = 0
         self.dead_population = 0
-        self.stat_log = []
+        self.stat_log = []  # we maintain a stat log for each simulation run for aggregate statistics later
         self.infected_this_turn = 0
         self.recovered_this_turn = 0
         self.died_this_turn = 0
         self.mask_count = 0
-        if with_masks:
-            self.create_population(person_count, True)  # The true is with_masks
-        elif not with_masks:
-            self.create_population(person_count)        # populates the grid structure with susceptible individuals
-        self.update_stats() 
+        self.create_population(person_count, with_masks, mask_percentage)    # Create population depending on count + mask status
+        self.update_stats()                                 # Update stats for turn 0 based of initialization
 
-    def create_population(self, person_count, with_masks = False):
+    def create_population(self, person_count, with_masks = False, mask_percentage = 0.5):
         self.population = person_count
         self.healthy_population = person_count
         self.update_stats()
@@ -42,20 +42,24 @@ class Grid:
             self.occupied_positions.add((x, y))
             individual = sickPeople.Individual((x,y))
             if with_masks:
-                if random.random() <= 0.5:
+                if random.random() <= mask_percentage: #50 PERCENT MASKING as default
                     individual.facemask = True
                     self.mask_count += 1
             self.people.append(individual)
             self.grid[x][y] = individual
             self.update_stats() 
 
-    def infect_lot(self, num, infectious_period = 1000, deadly_status = False): # for making people sick on turn 1
+    def infect_lot(self, num, infectious_period = 1000, deadly_status = False, immortals = False):
+        # for making people sick on turn 1
+        # can also make people sick+immortal to prevent situations where disease dies out before spreading
         self.sick_population += num
         self.healthy_population -= num
         self.infected_this_turn += num
         for i in range(num):
             if (i < len(self.people)):
                 self.people[i].infect(infectious_period, deadly_status)
+                if immortals == True:
+                    self.people[i].immortal = True
         self.update_stats()
         self.stat_log.append(self.stats)    #  record turn's stats in stat_log        
 
@@ -71,7 +75,7 @@ class Grid:
         print('Turn: ',self.stats[0])
         print('Total Original Population: ', self.stats[1])
         print('Current Healthy Count: ', self.stats[2])
-        print('Total Infected Count: ', self.stats[3])
+        print('Total Infected (ever not current) Count: ', self.stats[3])
         print('Total Recovered Count: ', self.stats[4]) 
         print('Total Death Count: ', self.stats[5])
         print('Infected this turn: ', self.stats[6])
@@ -80,6 +84,7 @@ class Grid:
         print('Mask Count: ', self.mask_count)
         print()
 
+    # remnant for testing 
     def sim1_print(self):
         print('Turn: ',self.stats[0])
         print('Total Original Population: ', self.stats[1])
@@ -87,6 +92,7 @@ class Grid:
         print('Total Infected Count: ', self.stats[3])
         print() 
     
+    #for testing - can print grids at any stage in simulation if running through manually 
     def print_grid(self):
         for row in self.grid:
             for cell in row:
@@ -119,7 +125,7 @@ class Grid:
                     neighbors.append((i, j))
         return neighbors
 
-    def check_neighbors_sick(self, position, with_masks = False):
+    def check_neighbors_sick(self, position, with_masks = False, mask_effectiveness = 0.5):
         x, y = position
         neighbors = self.get_neighbors(position)
         for neighbor in neighbors:
@@ -129,7 +135,7 @@ class Grid:
                 if not this_neighbor.facemask or not with_masks:
                     return True                             #if you are next to a sick person without a mask (or no masks in the first place in the sim) - return True
                 elif with_masks and this_neighbor.facemask:
-                    if random.random() <= 0.5:
+                    if random.random() <= mask_effectiveness: #MASK MORE EFFECTIVE RUN WAS .2 - .5 IS DEFAULT
                         return True                         #if the sim has facemasks & this neighbor is wearing one - only 50% chance to show up as sick (spread disease from this neighbor)
         return False                                        #if nobody next to position is sick or if facemasks work well enough return false for next to sick
 
@@ -147,6 +153,8 @@ class Grid:
         else:
             return False
         
+
+
     # Initializers for individual simulation scenarios
     def test1(self):
         self.__init__(100, 100, 6000)       #100x100 grid w/ 6000 individuals
@@ -155,13 +163,14 @@ class Grid:
     
     def test2(self): # for sim2
         self.__init__(100, 100, 6000)       
-        self.infect_lot(1, 20, True)        #Main difference is sick period of 20 turns, deadly sickness = True
+        self.infect_lot(1, 20, True, True)        #Main difference is sick period of 20 turns, deadly sickness = True
         # Turn 1: P - 6000, Current_HealthyPop 5999, Total_InfectedPop 1, Total_RecoveredPop 0, Total_DeadPop 0, Infected/T 0, Recovered/T 0, Died/T 0    
 
     def test3(self): # for sim3
         self.__init__(100, 100, 6000, True) #This time we instantiate the population with around 50% mask adherance 
-        self.infect_lot(1, 20, True)        #Otherwise same sickness as test 2
+        self.infect_lot(1, 20, True, True)        #Otherwise same sickness as test 2
         # Turn 1: P - 6000, Current_HealthyPop 5999, Total_InfectedPop 1, Total_RecoveredPop 0, Total_DeadPop 0, Infected/T 0, Recovered/T 0, Died/T 0    
+
 
 
     # Coding up specific simulation scenarios
@@ -243,6 +252,8 @@ class Grid:
         for person in self.people:
             if(person.state != 'Dead'):
                 person.move_person(self)
+            else:
+                pass
 
         # Second - Go through population and either do nothing (infected) or add to infect_list (susceptible and next to sick)     
         for person in self.people:
@@ -326,7 +337,7 @@ class Grid:
 
         with open('disease_stats_sim2.csv', 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['Turn', 'Avg_New_Infections', 'Avg_New_Recoveries', 'Avg_New_Deaths','Avg_Total_Infected', 'Avg_Total_Recoveries','Avg_New_Deaths'])
+            writer.writerow(['Turn', 'Avg_New_Infections', 'Avg_New_Recoveries', 'Avg_New_Deaths','Avg_Total_Infected', 'Avg_Total_Recoveries','Avg_Total_Deaths'])
             for i in range(0, max_steps+1):
                 writer.writerow([i, avg_new_infected[i], avg_new_recovered[i], avg_new_dead[i], avg_total_infected[i], avg_total_recovered[i], avg_total_dead[i]])
                 
@@ -344,10 +355,12 @@ class Grid:
 
         # First - move everyone on the board
         for person in self.people:
-            if person.state == 'Susceptible': 
+            if person.state == 'Susceptible' or person.state == 'Recovered': 
                 person.move_person(self)
-            elif person.state == 'Infected' and ((person.sickCounter >= 18) or (person.sickCounter <3)):
+            elif person.state == 'Infected' and ((person.sickCounter >= 15) or (person.sickCounter <3)):
                 person.move_person(self)
+            else:
+                pass
 
         # Second - Go through population and either do nothing (infected) or add to infect_list (susceptible and next to sick)     
         for person in self.people:
@@ -440,8 +453,27 @@ class Grid:
 
         with open('disease_stats_sim3.csv', 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['Turn', 'Avg_New_Infections', 'Avg_New_Recoveries', 'Avg_New_Deaths','Avg_Total_Infected', 'Avg_Total_Recoveries','Avg_New_Deaths', 'Avg_Mask_Count - ', avg_mask_count])
+            writer.writerow(['Turn', 'Avg_New_Infections', 'Avg_New_Recoveries', 'Avg_New_Deaths','Avg_Total_Infected', 'Avg_Total_Recoveries','Avg_Total_Deaths', 'Avg_Mask_Count - ', avg_mask_count])
             for i in range(0, max_steps+1):
                 writer.writerow([i, avg_new_infected[i], avg_new_recovered[i], avg_new_dead[i], avg_total_infected[i], avg_total_recovered[i], avg_total_dead[i]])
                 
         print("CSV file 'disease_stats_sim3.csv' has been generated successfully.")
+
+    def run_sim1_vis(self):
+        self.test1()                        # Initialize simulation
+        visualizer = GridVisualizer(self)   # Create an instance of GridVisualizer
+        visualizer.animate1()               # Call animate method on the visualizer instance
+
+    def run_sim2_vis(self):
+        self.test2()                        # Initialize simulation
+        visualizer = GridVisualizer(self)   # Create an instance of GridVisualizer
+        visualizer.animate2()               # Call animate method on the visualizer instance
+
+    def run_sim3_vis(self):
+        self.test3()                        # Initialize simulation
+        visualizer = GridVisualizer(self)   # Create an instance of GridVisualizer
+        visualizer.animate3()               # Call animate method on the visualizer instance
+
+
+
+        

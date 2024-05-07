@@ -9,16 +9,18 @@ class Individual:
         self.next_to_sick = None
         self.facemask = None
         self.immune = None
-        self.immortal = None
+        self.immortal = None    
+        # Made the first person infected immortal in simulations 2/3
+        # This was to prevent disease from not spreading (in case of death before spreading to anyone else)
 
-    def infect(self, num = 1000, d_status = False, first_turn = True): 
+    def infect(self, num = 1000, d_status = False, first_turn = True, mask_effectiveness = 0.5): 
         if self.immune != True:
             if self.facemask == None or first_turn == True:
                 self.state = 'Infected'
                 self.sickCounter = num
                 self.deadly = d_status
             elif self.facemask == True and first_turn != True:
-                if random.random() <= 0.5:
+                if random.random() <= mask_effectiveness:
                     self.state = 'Infected'
                     self.sickCounter = num
                     self.deadly = d_status
@@ -32,7 +34,9 @@ class Individual:
             self.state = 'Dead'
 
     def reduce_sick_count(self):
-        if self.deadly and random.random()  <= 0.0052541741:
+        #The number below is hard-coded for our scenario of 20 turn sickness with 10% chance of death.
+        #(This is [1-20root(.90)])
+        if self.deadly and random.random()  <= 0.0052541741: 
             self.die()
         if self.state == 'Infected':
             self.sickCounter -= 1

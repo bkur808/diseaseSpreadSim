@@ -1,50 +1,51 @@
-Disease Spread Simulator
-4/9
+Disease Spread Simulation:
 
-HOW TO RUN CODE CURRENTLY:
-    import simGrid_redo ; test = simGrid.Grid() ; test.runSim1(100) # This will run the first sim 100 times
-    import simGrid_redo ; test = simGrid.Grid() ; test.runSim2(100) # This will run the second sim 100 times
-    import simGrid_redo ; test = simGrid.Grid() ; test.runSim3(100) # This will run the third sim 100 times
+Presented in this simulator are three distinct scenarios which we are testing:
+        Scenario 1: 100x100 grid with 60% grid-population density - 0% fatality, running until all infected
 
-    import simGrid_redo ; test = simGrid_redo.Grid() ; test.test1() ; test.run_sim1_vis() # This will run a visualizer for a sim.
+        Scenario 2: Same grid + population. 10% fatality for 20 turn sickness - running until all recovered, healthy, or dead (no more current sick)
 
-If you want to mess around with testing a grid you can do as follows:
-    test.test1() ; test.print_grid() ; test.print_stats() ; test.stat_log ; test.advance_turn_sim1()
-    .......... OUTPUT WILL GO HERE WHEN YOU RUN ABOVE CODE
-    .......... YOU CAN TEST A SIMULATION TURN BY TURN WITH THE FOLLOWING LINE
-    test.print_grid() ; test.print_stats() ; test.stat_log ; test.advance_turn_sim1()
+        Scenario 3: Same parameters as scenario 2 - implementation of masks with 50% adherence and 50% effectiveness  for both healthy and sick wearers (prevent healthy from catching and sick from spreading)
+        Additionally during the peak of their sickness (turns 15-3 of 20 turn sickness) people stop moving (quarantine)
 
-    The above code can be used for sim 1, 2, or 3 - just swap out the number in the appropriate spot i.e. test.test2() or test.advance_turn_sim3()
+There are three basic ways to run our simulations, each will be explained below.
+        1 - Manually - turn-by-turn
+        2 - Automatically with Visual
+        3 - For Statistical Analysis
 
-You can also instantiate a grid through the following steps below:
+1 - Manually
+        Initializing - terminal commands below
+                import simGrid ; test = simGrid.Grid() 
+                test.test1()    (or test2()/test3() for other premade scenarios)
+                
+        Running and Printing (visual + stats)
+                test.print_grid() ; test.print_stats() ; test.stat_log ; test.advance_turn_sim1()   
+                - (or advance_turn_sim2()/advance_turn_sim3() for other premade scenarios)
+                - This can be repeated as many times as wanted for testing
 
-1 - import simGrid
-2 - test = simGrid.Grid(X,Y,Z,Masks?) 
-        In place of X put the rows
-        In place of Y put the columns
-        In place of Z put the starting population
-        Optional Boolean for masks True/False (F default)
-3 - test.infect_lot(X,Y,Deadly?)
-        In place of X put the # of people to infect
-        In place of Y put the # of turns people will be sick
-            - Default is 1000 turns
-        Optional Boolean for deadly virus
-4 - test.print_grid() ; test.print_stats() ; test.stat_log ; test.advance_turn_sim3()
-        This will advance you through the simulation turn by turn with printouts of grid and stats
+        If you want to initialize a custom grid you can do so with the following: 
+                (filling in custom values for variables below)
 
+                import simGrid 
+                test = simGrid.Grid(# Rows, # Columns, Person Count, With/Without Masks Boolean, Mask adherance rate (0-1))
+                test.infect_lot(n, # turns for infectious period, deadly disease boolean, first sick people immortal boolean)
 
+                In custom scenarios I would recommend advancing turns using advance_turn_sim3() as presented above. 
+                (sim3 methods include the most functionality implementations) - although sick people also stop moving during the middle of their sickness
 
-4/1 
-    TODO: FINISH SIM 1-3 - fix stat tracking in Sim 2 advance_turn logic
+2 - Automatically with Visual - for scenarios 1-3 (not implemented for custom scenarios as of yet):
+        import simGrid ; test = simGrid.Grid() ; test.run_sim1_vis() (or run_sim2_vis()/run_sim3_vis())
 
-    SIM 1 is somewhat complete w/o visualizations. 
-    SIM 2 is done other than stat tracking - needs logic to be fixed for recovering/dying
-    SIM 3 is yet to be started - but only adds one logic component 
-            -all stat tracking should work the same
+        *Note - couldn't figure out how to end animations automatically given conditions (remnants in code to figure out later), so this may cause issue - can just x out of visuals at end for now...
 
-    Can test scenarios with the following prompts:
-    import simGrid
-    test1 = simGrid.Grid() ; test2 = simGrid.Grid()
-    test1.runSim1(10)
-    test2.runSim2(10)
+3 - Running Simulations for statistical analysis:
+        import simGrid
+        test = simGrid.Grid()
+        test.run_sim1(n)        # where n is the number of simulations you want to run
+                                # can also use run_sim2(n) or run_sim3(n)
+                                # results are recored in a csv file for analysis later
+                                # Recorded is the average stats for each turn in the simulation over n trials
+                                # WARNING THE FILE NAMES ARE CURRENTLY HARDCODED AND WILL SAVE OVER OLD RUNS
+                                # OUR STATISTICS FOR OUR PRESENTATIONS ARE SAVED IN OUTSIDE FILES
 
+Updated 5/7/24
