@@ -63,6 +63,8 @@ class GridVisualizer:
             self.update_vis_grid()
             self.repeat_anim = False
             return False
+            # I was trying to figure out a way to get the animations to stop automatically when we reach our end condition
+            # But, I was unable to before turning in.. coming back to this later
 
     def animate1(self):
         self.init_plot()  # Initialize the plot
