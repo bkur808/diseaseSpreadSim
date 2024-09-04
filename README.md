@@ -2,12 +2,12 @@ Disease Spread Simulation:
 
 Presented in this simulator are three distinct scenarios which we are testing:
 
-        Scenario 1: 100x100 grid with 60% grid-population density - 0% fatality, running until all infected
+Scenario 1: 100x100 grid with 60% grid-population density - 0% fatality, running until all infected
 
-        Scenario 2: Same grid + population. 10% fatality for 20 turn sickness - running until all recovered, healthy, or dead (no more current sick)
+Scenario 2: Same grid + population. 10% fatality for 20 turn sickness - running until all recovered, healthy, or dead (no more current sick)
 
-        Scenario 3: Same parameters as scenario 2 - implementation of masks with 50% adherence and 50% effectiveness  for both healthy and sick wearers (prevent healthy from catching and sick from spreading)
-        Additionally during the peak of their sickness (turns 15-3 of 20 turn sickness) people stop moving (quarantine)
+Scenario 3: Same parameters as scenario 2 - implementation of masks with 50% adherence and 50% effectiveness  for both healthy and sick wearers (prevent healthy from catching and sick from spreading)
+*Additionally during the peak of their sickness (turns 15-3 of 20 turn sickness) people stop moving (quarantine)
 
 There are three basic ways to run our simulations, each will be explained below:
 
