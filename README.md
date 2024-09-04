@@ -14,11 +14,13 @@ There are three basic ways to run our simulations, each will be explained below:
         1 - Manually - turn-by-turn
         2 - Automatically with Visual
         3 - For Statistical Analysis
-        *For all scenarios assuming running a terminal with python3 installed, and all source files in source directory 
+        *For all scenarios assuming running a terminal with python3 installed, 
+        and all python source files in source directory 
 
 1 - Manually:
 
         Initializing - terminal commands below
+                Initialize python using py3 in terminal (must be in source directory)
                 import simGrid ; test = simGrid.Grid() 
                 test.test1()    (or test2()/test3() for other premade scenarios)
                 
